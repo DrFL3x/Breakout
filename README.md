@@ -4,5 +4,5 @@
 
 - Add HUD, to keep score and see results
 - improve rect collisions at small angles
-- Add sounds, start and end od game UI
+- Add sound, start&end game UI
 - Add levels and interesting challenges
