@@ -24,11 +24,10 @@ void SDL_handling::clean_renderer()
 
 }
 
-void SDL_handling::init_backorund(){
-
+void SDL_handling::init_backorund()
+{
         SDL_SetRenderDrawColor(renderer, 0,0, 0, 128); // Set the background color to grey
         SDL_RenderClear(renderer); // now render it
-        //SDL_RenderPresent(renderer);
 }
 
 

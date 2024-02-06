@@ -115,7 +115,7 @@ bool Bricks::ball_brick_collided(SDL_FRect& ball, SDL_Rect& brick)
     }
 
 void Bricks::create() 
-{
+{   
 }
 
 

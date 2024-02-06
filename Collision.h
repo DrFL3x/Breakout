@@ -3,6 +3,10 @@
 #include "Wall.h"
 #include "Ball.h"
 #include "Bricks.h"
+#include "SDL_ttf.h"
+#include "Audio.h"
+
+
 
 class Collision
 {
@@ -13,8 +17,9 @@ public:
 	~Collision() {}
 
 	void check_collision();
-	void check_bricks_collision(Bricks* field[], SDL_Renderer* renderer);
-	void renderScoreText(SDL_Renderer* renderer, int score);
+	int  check_bricks_collision(Bricks* field[], SDL_Renderer* renderer, TTF_Font* font, int score);
+	void renderScoreText(SDL_Renderer* renderer, TTF_Font* font,int score);
+	void renderGameOverText(SDL_Renderer* renderer, TTF_Font* font);
 
 	Wall* wall;
 	Line* board;
@@ -23,6 +28,7 @@ public:
 
 
 private:
+	Audio audio;
 
 
 };

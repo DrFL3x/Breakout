@@ -4,10 +4,11 @@
 #include "Bricks.h"
 #include <intrin.h>
 
+int score = 0;
+
 
 void Start::Run()
 {
-
 
 	// first set window
 	Game* start_handler = new Game();
@@ -24,13 +25,28 @@ void Start::Run()
 
 	Bricks* field[60] = {0};
 
+
 	for (int i = 0; i < BLOCKS_NUM; i++)
 	{
 		field[i] = new Bricks(start_handler->game_handler->renderer);
 	}
 
 
-	///// G_looop
+	///// Init the SDL_ttf
+	TTF_Init();
+
+	// load the font
+	
+
+	TTF_Font* game_font = TTF_OpenFont("C:/Users/Eugen/Desktop/ProjeXt/Breakout/x64/Debug/arcadeclassic.ttf", 72);
+
+	if (!game_font) 
+	{
+		SDL_GetError();
+		std::cout << "not good path, :" << TTF_GetError() << std::endl;
+	}
+
+
 	
 	bool quit = false;
 	SDL_Event e;
@@ -39,8 +55,13 @@ void Start::Run()
 	Uint64 LAST = 0;
 	double deltaTime = 0;
 
+	//////////////////
+	/// Game_looop ///
+	//////////////////
+
 	while (!quit)
 	{
+
 
 		collision.check_collision();
 
@@ -55,6 +76,7 @@ void Start::Run()
 				switch (e.key.keysym.sym){
 
 				case SDLK_LEFT:
+
 					//line.calculate_movement<void>('-');
 
 					collision.check_collision();
@@ -62,7 +84,7 @@ void Start::Run()
 					break;
 
 				case SDLK_RIGHT:
-					//line.calculate_movement<void>('+');
+
 
 					collision.check_collision();
 					line.move_right();
@@ -76,16 +98,20 @@ void Start::Run()
 
 		}
 
+
+
+
 		start_handler->game_handler->init_backorund();
 		wall.render();
 		line.render();
 
-		
-		int x_offset = 50, y_offset =  200; //starting coordinates
+		//////////////////////
+		// initalise bricks //
+		//////////////////////
 
-		//
-		//initalise bricks
-		//
+		//starting coordinates
+		int x_offset = 50, y_offset =  200;
+
 		for (int i = 0; i < BLOCKS_NUM ; ++i) 
 		{
 			if (field[i] != NULL)
@@ -96,25 +122,27 @@ void Start::Run()
 
 
 			x_offset += 72; 
-			if (x_offset > 700) {
+			if (x_offset > 700) 
+			{
 				y_offset += 40; //move down
 				x_offset = 50;  //reset x offset
-				}
+			}
 		}
-
-
+		
 		ball.check_collision();
 
-
+		// now calculate time - delta
 		LAST = NOW;
 		NOW = SDL_GetPerformanceCounter();
 		deltaTime = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
 
 
-		ball.move( deltaTime);
+		ball.move( deltaTime); 
 		ball.render();
 
-		collision.check_bricks_collision(field, start_handler->game_handler->renderer); 
+		score=collision.check_bricks_collision(field, start_handler->game_handler->renderer, game_font, score);
+		
+		collision.renderScoreText(start_handler->game_handler->renderer,game_font, score); 
 
 		SDL_RenderPresent(start_handler->game_handler->renderer);
 

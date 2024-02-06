@@ -2,11 +2,14 @@
 #include<string>
 #include <cmath>
 
+// checks collision of objects  //
 
-// checks collision of objects 
 
 void Collision::check_collision()
 {
+    //pad sound
+    std::string paddle_sound = "C:/Users/Eugen/Desktop/ProjeXt/Breakout/x64/Debug/mouth-sound-ping-pong.wav";
+
     //stops the board from moving thorugh the l& r walls
     // board & left wall collision checkk
     if (board->get_board().x == wall->get_left_w().x + wall->get_left_w().w && board->get_board().x + board->get_board().w >= wall->get_left_w().x)
@@ -39,30 +42,26 @@ void Collision::check_collision()
     if (isBallAboveBoard && !isBallTooRight && !isBallTooLeft && !isBallTooUp && !isBallTooBelow)
     {
         ball->angle = -ball->angle;
+        audio.play_sound(paddle_sound);
         return;
     }
 
-    if (ball->get_geometry().y > 780)
-    {
-        // Display "Game Over" message
-        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Game Over", "Game Over", NULL);
-        SDL_Quit();
-    }
+
 
 }
 
 
 
-void Collision::check_bricks_collision(Bricks* field[], SDL_Renderer * renderer)
+int Collision::check_bricks_collision(Bricks* field[], SDL_Renderer * renderer, TTF_Font* font, int score)
 {
+    std::string string = "C:/Users/Eugen/Desktop/ProjeXt/Breakout/x64/Debug/zap-fx_120bpm_F_minor.wav";
 
-// CHECK WHEN BALL HITS THE SIDE OF THE BOARD
+    // CHECK WHEN BALL HITS THE SIDE OF THE BOARD
     // ball & bricks
     for (int i = 0; i < BLOCKS_NUM; ++i)
     {
         if (field[i])
         {
-
             //if (brick->field[i]->ball_brick_collided(ball->get_geometry(), brick->get_geometry()))
 
             if(brick->ball_brick_collided(ball->get_geometry(), field[i]->get_geometry()))
@@ -70,67 +69,97 @@ void Collision::check_bricks_collision(Bricks* field[], SDL_Renderer * renderer)
                 
                 // Play sound, display score
                 // PlaySFX();
-                
-                if (!(i % 3 == 0)) 
+
+                if (!(i % 3 == 0))
                 {
                     delete field[i];
                     field[i] = nullptr;
+                    score += 1;
+                    audio.play_sound(string);
                 }
                 ball->angle = -ball->angle;
 
             }
-
         }
     }
 
+    // "Game over" box display 
+    if (ball->get_geometry().y > 780)
+    {
+        renderGameOverText(renderer,font);
+        board->board_stop();
+    }
+
+    return score;
 }
 
 
-#if 0
-
-void Collision::renderScoreText(SDL_Renderer* renderer, int score) {
-    SDL_Color textColor = { 255, 255, 255 }; // White color
-
-    // Convert score to string
-    std::string scoreStr = "Score: " + std::to_string(score);
-
-    // Assume you have a font size and style
-    int fontSize = 24;
+<<<<<<< HEAD
+void Collision:: renderGameOverText(SDL_Renderer* renderer, TTF_Font* font)
+{
+    SDL_Color textColor = { 238, 75, 43 }; // Red color
 
     // Render text surface
-    SDL_Surface* textSurface = SDL_CreateRGBSurface(0, 100, 50, 32, 0, 0, 0, 0); // Adjust surface size as needed
-    if (textSurface == nullptr) {
-        std::cerr << "Error creating text surface: " << SDL_GetError() << std::endl;
+
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, "Game Over", textColor);
+    if (textSurface == nullptr)
         return;
-    }
+   
 
-    // Use SDL functions to draw text onto the surface (e.g., SDL_RenderDrawText)
-    // Note: SDL_RenderDrawText is a fictional function; you'll need to implement your own text rendering logic
-
-    // Create texture from surface
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_FreeSurface(textSurface); // Free surface
+    SDL_FreeSurface(textSurface); 
 
-    if (textTexture == nullptr) {
-        std::cerr << "Error creating text texture: " << SDL_GetError() << std::endl;
+    if (textTexture == nullptr)
         return;
-    }
-
-    // Get text width and height
+   
+    //text width & height
     int textWidth, textHeight;
     SDL_QueryTexture(textTexture, nullptr, nullptr, &textWidth, &textHeight);
 
-    // Set position to render text (e.g., top-left corner of the screen)
-    int posX = 400;
-    int posY = 40;
+    int posX = ( 800 - textWidth) / 2;
+    int posY = 500;
 
-    // Render text texture
-    SDL_Rect dstRect = { posX, posY, textWidth, textHeight };
-    SDL_RenderCopy(renderer, textTexture, nullptr, &dstRect);
+    // Now render 
+    SDL_Rect text_destination = { posX, 500, textWidth, textHeight };
+    SDL_RenderCopy(renderer, textTexture, nullptr, &text_destination);
+
     SDL_DestroyTexture(textTexture);
 }
-#endif // 0
 
+
+void Collision::renderScoreText(SDL_Renderer* renderer, TTF_Font* font, int score)
+{
+    // Convert score to string
+    std::string scoreText = "Score       " + std::to_string(score);
+
+    SDL_Color textColor = { 255, 255, 255 }; // Red color
+
+    SDL_Surface* score_surface = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
+    if (score_surface == nullptr)
+        return;
+
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, score_surface);
+    SDL_FreeSurface(score_surface);
+
+    if (textTexture == nullptr)
+        return;
+
+    // Get text width & height
+    int width, height;
+    SDL_QueryTexture(textTexture, nullptr, nullptr, &width, &height);
+
+    int posX = 50;
+    int posY = 50;
+
+    // Render text
+    SDL_Rect textDestination = { posX, posY, width, height };
+    SDL_RenderCopy(renderer, textTexture, nullptr, &textDestination);
+
+    SDL_DestroyTexture(textTexture);
+}
+=======
+
+>>>>>>> 6427599168d7acbe8a3dee930c2c4e6dff0202cd
 
 
 
