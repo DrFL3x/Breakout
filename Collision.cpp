@@ -94,7 +94,7 @@ int Collision::check_bricks_collision(Bricks* field[], SDL_Renderer * renderer, 
 }
 
 
-<<<<<<< HEAD
+
 void Collision:: renderGameOverText(SDL_Renderer* renderer, TTF_Font* font)
 {
     SDL_Color textColor = { 238, 75, 43 }; // Red color
@@ -157,9 +157,7 @@ void Collision::renderScoreText(SDL_Renderer* renderer, TTF_Font* font, int scor
 
     SDL_DestroyTexture(textTexture);
 }
-=======
 
->>>>>>> 6427599168d7acbe8a3dee930c2c4e6dff0202cd
 
 
 
